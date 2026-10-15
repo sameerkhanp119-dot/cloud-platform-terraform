@@ -97,7 +97,7 @@ Every push and pull request runs:
 
 ## Roadmap
 
-- Binary Authorization with signed images from CI
+- Binary Authorization attestation policy so only images signed by CI can run (enforcement is already on)
 - Cloud SQL (PostgreSQL) module with private IP for order and payment services
 - Policy Controller constraints (no privileged pods, required labels)
 - Plan-on-PR workflow authenticated with Workload Identity Federation
