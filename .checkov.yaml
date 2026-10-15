@@ -1,2 +1,13 @@
 # Checks skipped on purpose, each with the reason. Everything else must pass.
-skip-check: []
+skip-check:
+  # Network policy is enforced by Dataplane V2 (datapath_provider = ADVANCED_DATAPATH);
+  # the legacy Calico network_policy block conflicts with it.
+  - CKV_GCP_12
+  # The GKE metadata server is set on every node pool (workload_metadata_config = GKE_METADATA);
+  # the cluster's default pool is removed, so there is no cluster-level node_config to set.
+  - CKV_GCP_69
+  # Google Groups for RBAC needs a Google Workspace domain with a gke-security-groups group;
+  # enable authenticator_groups_config per organisation.
+  - CKV_GCP_65
+  # Artifact Registry does not support customer-supplied keys (CSEK); Google-managed encryption is used.
+  - CKV_GCP_84

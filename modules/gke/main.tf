@@ -39,6 +39,18 @@ resource "google_container_cluster" "this" {
     channel = var.release_channel
   }
 
+  # Legacy client certificates are long-lived credentials; disable them in favour of IAM.
+  master_auth {
+    client_certificate_config {
+      issue_client_certificate = false
+    }
+  }
+
+  # Enforce the project's Binary Authorization policy (tighten it to signed images per environment).
+  binary_authorization {
+    evaluation_mode = "PROJECT_SINGLETON_POLICY_ENFORCE"
+  }
+
   ip_allocation_policy {
     cluster_secondary_range_name  = var.pods_range_name
     services_secondary_range_name = var.services_range_name
