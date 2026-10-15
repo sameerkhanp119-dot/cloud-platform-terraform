@@ -20,16 +20,17 @@ resource "google_project_iam_member" "nodes" {
 }
 
 resource "google_container_cluster" "this" {
-  name                  = var.name
-  project               = var.project_id
-  location              = var.region
-  network               = var.network_self_link
-  subnetwork            = var.subnetwork_self_link
-  networking_mode       = "VPC_NATIVE"
-  datapath_provider     = "ADVANCED_DATAPATH"
-  enable_shielded_nodes = true
-  deletion_protection   = var.deletion_protection
-  resource_labels       = var.labels
+  name                        = var.name
+  project                     = var.project_id
+  location                    = var.region
+  network                     = var.network_self_link
+  subnetwork                  = var.subnetwork_self_link
+  networking_mode             = "VPC_NATIVE"
+  datapath_provider           = "ADVANCED_DATAPATH"
+  enable_shielded_nodes       = true
+  enable_intranode_visibility = true
+  deletion_protection         = var.deletion_protection
+  resource_labels             = var.labels
 
   # Node pools are managed separately so they can be changed without recreating the cluster.
   remove_default_node_pool = true
