@@ -1,0 +1,2 @@
+# Checks skipped on purpose, each with the reason. Everything else must pass.
+skip-check: []

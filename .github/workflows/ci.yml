@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  fmt:
+    name: terraform fmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: hashicorp/setup-terraform@v3
+      - name: Check formatting
+        shell: bash
+        run: |
+          if ! out=$(terraform fmt -check -diff -recursive 2>&1); then
+            out="${out//'%'/'%25'}"; out="${out//$'\n'/'%0A'}"
+            echo "::error title=terraform fmt::${out}"
+            exit 1
+          fi
+
+  validate:
+    name: validate (${{ matrix.environment }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [dev, prod]
+    defaults:
+      run:
+        working-directory: environments/${{ matrix.environment }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform init -backend=false -input=false
+      - name: Validate
+        shell: bash
+        run: |
+          if ! out=$(terraform validate -no-color 2>&1); then
+            out="${out//'%'/'%25'}"; out="${out//$'\n'/'%0A'}"
+            echo "::error title=terraform validate (${{ matrix.environment }})::${out}"
+            exit 1
+          fi
+
+  tflint:
+    name: tflint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: terraform-linters/setup-tflint@v4
+      - run: tflint --init
+      - name: Lint
+        shell: bash
+        run: |
+          if ! out=$(tflint --recursive --format compact 2>&1); then
+            out="${out//'%'/'%25'}"; out="${out//$'\n'/'%0A'}"
+            echo "::error title=tflint::${out}"
+            exit 1
+          fi
+
+  security:
+    name: checkov security scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: pip install checkov
+      - name: Scan
+        shell: bash
+        run: |
+          if ! out=$(checkov -d . --framework terraform --config-file .checkov.yaml --compact --quiet 2>&1); then
+            summary=$(echo "$out" | grep -E "^Check: |FAILED for resource|^Passed checks" | head -80)
+            summary="${summary//'%'/'%25'}"; summary="${summary//$'\n'/'%0A'}"
+            echo "::error title=checkov::${summary}"
+            exit 1
+          fi
+          echo "$out" | tail -5

@@ -1,0 +1,21 @@
+# Argo CD project limiting what platform applications may deploy and where.
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: platform
+  namespace: argocd
+spec:
+  description: Application workloads running on the GKE platform
+  sourceRepos:
+    - https://github.com/sameerkhanp119-dot/*
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: commerce
+    - server: https://kubernetes.default.svc
+      namespace: edge
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+  namespaceResourceBlacklist:
+    - group: ""
+      kind: ResourceQuota
