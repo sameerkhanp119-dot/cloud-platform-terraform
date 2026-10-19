@@ -5,11 +5,17 @@
 ![Google Cloud](https://img.shields.io/badge/Google_Cloud-GKE-4285F4?logo=googlecloud&logoColor=white)
 ![Argo CD](https://img.shields.io/badge/GitOps-Argo_CD-EF7B4D?logo=argo&logoColor=white)
 
-Reusable Terraform modules for a production-grade Kubernetes platform on Google Cloud, with separate
-**dev** and **prod** environments and GitOps delivery through Argo CD. It is the platform the other projects
-deploy to: [commerce-order-platform](https://github.com/sameerkhanp119-dot/commerce-order-platform),
+Reference Terraform modules for a Kubernetes platform on Google Cloud, with separate
+**dev** and **prod** environments and GitOps delivery through Argo CD. It describes a target platform for the other portfolio projects:
+ [commerce-order-platform](https://github.com/sameerkhanp119-dot/commerce-order-platform),
 [api-gateway-auth](https://github.com/sameerkhanp119-dot/api-gateway-auth) and
 [realtime-event-analytics](https://github.com/sameerkhanp119-dot/realtime-event-analytics).
+
+## Scope and deployment evidence
+
+This is an independent portfolio reference implementation. The `dev` and `prod` names identify configuration profiles; they do not establish that either environment has been deployed or operated in production.
+
+Formatting, validation, linting and static security checks assess configuration quality. They do not prove a successful cloud deployment, application compatibility, recovery behavior, availability or cost. Before using this configuration for a real workload, review the plan, IAM access and network boundaries, verify image provenance, and test application deployment and recovery in your own environment. No production availability or load benchmark is claimed here.
 
 ## Architecture
 
